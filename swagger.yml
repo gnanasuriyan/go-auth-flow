@@ -1,0 +1,87 @@
+swagger: "2.0"
+info:
+  description: Reseaching about authentication flow
+  title: App authentication
+  version: 1.0.0
+  contact:
+    email: msgtosuriya@gmail.com
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+basePath: "/v1"
+tags:
+  - name: "user"
+    description: everything abount user and authentication
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+  - https
+paths:
+  /login:
+    post:
+      tags:
+        - "user"
+      summary: "Getting authentication token using email and password"
+      description: ""
+      operationId: "login"
+      parameters:
+        - in: body
+          name: "body"
+          description: "User credentials"
+          required: true
+          schema:
+            $ref: '#/definitions/LoginCredentials'
+      responses:
+        200:
+          description: "successful authentication"
+          schema:
+            $ref: '#/definitions/LoginSuccess'
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        400:
+          description: "Invalid username/password supplied"
+          schema:
+            $ref: '#/definitions/error'
+        default:
+          description: error
+          schema:
+            $ref: '#/definitions/error'
+definitions:
+  LoginCredentials:
+    type: object
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+  LoginSuccess:
+    type: object
+    properties:
+      success:
+        type: boolean
+      token:
+        type: string
+  error:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      code:
+        type: integer
+        format: int64
+      message:
+        type: string
