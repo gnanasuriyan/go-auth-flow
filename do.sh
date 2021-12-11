@@ -9,7 +9,7 @@ elif [[ $1 = 'generate-server' ]]; then
 elif [[ $1 = 'resolve-dependencies' ]]; then
     go get -u -f ./...
 elif [[ $1 = 'wire' ]]; then
-    go get -u -f ./...
+    go run github.com/google/wire/cmd/wire ./wire
 else
   echo 'unknown operation'
 fi

@@ -3,8 +3,10 @@
 package restapi
 
 import (
+	"context"
 	"crypto/tls"
 	"net/http"
+	"oauth-study/wire"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
@@ -21,6 +23,11 @@ func configureFlags(api *operations.OauthStudyAPI) {
 }
 
 func configureAPI(api *operations.OauthStudyAPI) http.Handler {
+	ctx := context.Background()
+	app, err := wire.GetApp(ctx)
+	if err != nil {
+		panic(err)
+	}
 	// configure the api here
 	api.ServeError = errors.ServeError
 
@@ -40,7 +47,8 @@ func configureAPI(api *operations.OauthStudyAPI) http.Handler {
 
 	if api.UserLoginHandler == nil {
 		api.UserLoginHandler = user.LoginHandlerFunc(func(params user.LoginParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.Login has not yet been implemented")
+			//return middleware.NotImplemented("operation user.Login has not yet been implemented")
+			return app.LoginHandler.Login(ctx, params)
 		})
 	}
 
