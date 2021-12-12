@@ -42,18 +42,13 @@ func configureAPI(api *operations.OauthStudyAPI) http.Handler {
 	// api.UseRedoc()
 
 	api.JSONConsumer = runtime.JSONConsumer()
-
 	api.JSONProducer = runtime.JSONProducer()
 
-	if api.UserLoginHandler == nil {
-		api.UserLoginHandler = user.LoginHandlerFunc(func(params user.LoginParams) middleware.Responder {
-			//return middleware.NotImplemented("operation user.Login has not yet been implemented")
-			return app.LoginHandler.Login(ctx, params)
-		})
-	}
+	api.UserLoginHandler = user.LoginHandlerFunc(func(params user.LoginParams) middleware.Responder {
+		return app.LoginHandler.Login(ctx, params)
+	})
 
 	api.PreServerShutdown = func() {}
-
 	api.ServerShutdown = func() {}
 
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))

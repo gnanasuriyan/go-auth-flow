@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  description: Reseaching about authentication flow
+  description: Authentication flow
   title: App authentication
   version: 1.0.0
   contact:
@@ -18,7 +18,6 @@ produces:
   - application/json
 schemes:
   - http
-  - https
 paths:
   /login:
     post:

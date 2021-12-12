@@ -10,11 +10,11 @@ import (
 )
 
 type App struct {
-	LoginHandler handlers.LoginHandler
+	LoginHandler handlers.ILoginHandler
 }
 
 var handlerSet = wire.NewSet(
-	wire.Struct(new(handlers.LoginHandler), "*"),
+	NewLoginHandler,
 )
 
 func GetApp(ctx context.Context) (*App, error) {

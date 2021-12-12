@@ -2,10 +2,9 @@
 
 // Package restapi App authentication
 //
-//  Reseaching about authentication flow
+//  Authentication flow
 //  Schemes:
 //    http
-//    https
 //  Host: localhost
 //  BasePath: /v1
 //  Version: 1.0.0

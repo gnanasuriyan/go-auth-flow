@@ -50,7 +50,7 @@ func NewOauthStudyAPI(spec *loads.Document) *OauthStudyAPI {
 	}
 }
 
-/*OauthStudyAPI Reseaching about authentication flow */
+/*OauthStudyAPI Authentication flow */
 type OauthStudyAPI struct {
 	spec            *loads.Document
 	context         *middleware.Context

@@ -25,12 +25,11 @@ func init() {
     "application/json"
   ],
   "schemes": [
-    "http",
-    "https"
+    "http"
   ],
   "swagger": "2.0",
   "info": {
-    "description": "Reseaching about authentication flow",
+    "description": "Authentication flow",
     "title": "App authentication",
     "contact": {
       "email": "msgtosuriya@gmail.com"
@@ -155,12 +154,11 @@ func init() {
     "application/json"
   ],
   "schemes": [
-    "http",
-    "https"
+    "http"
   ],
   "swagger": "2.0",
   "info": {
-    "description": "Reseaching about authentication flow",
+    "description": "Authentication flow",
     "title": "App authentication",
     "contact": {
       "email": "msgtosuriya@gmail.com"
