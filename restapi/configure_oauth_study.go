@@ -5,6 +5,7 @@ package restapi
 import (
 	"context"
 	"crypto/tls"
+	"fmt"
 	"net/http"
 	"oauth-study/wire"
 
@@ -30,7 +31,7 @@ func configureAPI(api *operations.OauthStudyAPI) http.Handler {
 	}
 	// configure the api here
 	api.ServeError = errors.ServeError
-
+	fmt.Printf("database: %v", app.DB)
 	// Set your custom logger if needed. Default one is log.Printf
 	// Expected interface func(string, ...interface{})
 	//
@@ -45,7 +46,7 @@ func configureAPI(api *operations.OauthStudyAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	api.UserLoginHandler = user.LoginHandlerFunc(func(params user.LoginParams) middleware.Responder {
-		return app.LoginHandler.Login(ctx, params)
+		return app.LoginHandler.Login(params.HTTPRequest.Context(), params)
 	})
 
 	api.PreServerShutdown = func() {}
