@@ -9,6 +9,7 @@ package app
 import (
 	"context"
 	"go-auth-flow/internal/config"
+	"go-auth-flow/internal/database"
 )
 
 // Injectors from wire.go:
@@ -18,8 +19,16 @@ func GetApp(ctx context.Context) (*App, error) {
 	appConfiguration := &config.AppConfiguration{
 		Configuration: configuration,
 	}
+	dbDependencies := database.DBDependencies{
+		DatabaseConfig: appConfiguration,
+	}
+	db := database.InitializeDatabaseConnection(dbDependencies)
+	databaseDatabase := &database.Database{
+		SqlxDB: db,
+	}
 	app := &App{
 		AppConfig: appConfiguration,
+		DB:        databaseDatabase,
 	}
 	return app, nil
 }
@@ -28,4 +37,5 @@ func GetApp(ctx context.Context) (*App, error) {
 
 type App struct {
 	AppConfig *config.AppConfiguration
+	DB        *database.Database
 }

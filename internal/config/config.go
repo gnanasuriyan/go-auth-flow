@@ -39,7 +39,7 @@ type AppConfiguration struct {
 var NewAppConfiguration = wire.NewSet(
 	GetConfiguration,
 	wire.Struct(new(AppConfiguration), "*"),
-	wire.Bind(new(IDatabaseConfig), new(AppConfiguration)),
+	wire.Bind(new(IDatabaseConfig), new(*AppConfiguration)),
 )
 
 var (
@@ -61,30 +61,30 @@ func GetConfiguration() *Configuration {
 	return configuration
 }
 
-func (ac *Configuration) GetHost() string {
+func (ac *AppConfiguration) GetHost() string {
 	return ac.DB.Host
 }
 
-func (ac *Configuration) GetPort() uint {
+func (ac *AppConfiguration) GetPort() uint {
 	return ac.DB.Port
 }
 
-func (ac *Configuration) GetUsername() string {
+func (ac *AppConfiguration) GetUsername() string {
 	return ac.DB.Username
 }
 
-func (ac *Configuration) GetPassword() string {
+func (ac *AppConfiguration) GetPassword() string {
 	return ac.DB.Password
 }
 
-func (ac *Configuration) GetDatabase() string {
+func (ac *AppConfiguration) GetDatabase() string {
 	return ac.DB.Database
 }
 
-func (ac *Configuration) GetMaxOpenConnections() int {
+func (ac *AppConfiguration) GetMaxOpenConnections() int {
 	return ac.DB.MaxOpenConnections
 }
 
-func (ac *Configuration) GetMaxIdleConnections() int {
+func (ac *AppConfiguration) GetMaxIdleConnections() int {
 	return ac.DB.MaxIdleConnections
 }
