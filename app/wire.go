@@ -4,29 +4,26 @@
 package app
 
 import (
-	"context"
 	"go-auth-flow/handlers"
-	"go-auth-flow/internal/config"
-	"go-auth-flow/internal/database"
 	"go-auth-flow/middlewares"
 
 	"github.com/google/wire"
 )
 
 type App struct {
-	AppConfig  *config.AppConfiguration
-	DB         *database.Database
-	Middleware *middlewares.Middlewares
-	Handlers   *handlers.Handlers
+	//AppConfig  *config.AppConfiguration
+	//DB         *database.Database
+	Middlewares *middlewares.Middlewares
+	Handlers    *handlers.Handlers
 }
 
-func GetApp(ctx context.Context) (*App, error) {
+func GetApp() *App {
 	wire.Build(
-		config.NewAppConfigurationSet,
-		database.NewDatabaseSet,
+		//config.NewAppConfigurationSet,
+		//database.NewDatabaseSet,
 		middlewares.MiddlewareSet,
 		handlers.HandlerSet,
 		wire.Struct(new(App), "*"),
 	)
-	return &App{}, nil
+	return &App{}
 }

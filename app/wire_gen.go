@@ -7,26 +7,13 @@
 package app
 
 import (
-	"context"
-	"go-auth-flow/internal/config"
-	"go-auth-flow/internal/database"
+	"go-auth-flow/handlers"
 	"go-auth-flow/middlewares"
 )
 
 // Injectors from wire.go:
 
-func GetApp(ctx context.Context) (*App, error) {
-	configuration := config.GetConfiguration()
-	appConfiguration := &config.AppConfiguration{
-		Configuration: configuration,
-	}
-	dbDependencies := database.DBDependencies{
-		DatabaseConfig: appConfiguration,
-	}
-	db := database.InitializeDatabaseConnection(dbDependencies)
-	databaseDatabase := &database.Database{
-		SqlxDB: db,
-	}
+func GetApp() *App {
 	panicHandler := &middlewares.PanicHandler{}
 	wrapRequestLogger := &middlewares.WrapRequestLogger{}
 	wrapUUID := &middlewares.WrapUUID{}
@@ -35,18 +22,22 @@ func GetApp(ctx context.Context) (*App, error) {
 		WrapRequestLogger: wrapRequestLogger,
 		WrapUUID:          wrapUUID,
 	}
-	app := &App{
-		AppConfig:  appConfiguration,
-		DB:         databaseDatabase,
-		Middleware: middlewaresMiddlewares,
+	loginHandler := &handlers.LoginHandler{}
+	handlersHandlers := &handlers.Handlers{
+		LoginHandler: loginHandler,
 	}
-	return app, nil
+	app := &App{
+		Middlewares: middlewaresMiddlewares,
+		Handlers:    handlersHandlers,
+	}
+	return app
 }
 
 // wire.go:
 
 type App struct {
-	AppConfig  *config.AppConfiguration
-	DB         *database.Database
-	Middleware *middlewares.Middlewares
+	//AppConfig  *config.AppConfiguration
+	//DB         *database.Database
+	Middlewares *middlewares.Middlewares
+	Handlers    *handlers.Handlers
 }

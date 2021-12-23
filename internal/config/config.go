@@ -52,10 +52,12 @@ func GetConfiguration() *Configuration {
 		yamlFile, err := ioutil.ReadFile("config.yml")
 		if err != nil {
 			log.Fatalf("failed loading configuration: %v", err)
+			panic(err)
 		}
 		err = yaml.Unmarshal(yamlFile, configuration)
 		if err != nil {
 			log.Fatalf("Unmarshal: %v", err)
+			panic(err)
 		}
 	})
 	return configuration

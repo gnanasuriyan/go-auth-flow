@@ -4,14 +4,16 @@ package restapi
 
 import (
 	"crypto/tls"
+	app2 "go-auth-flow/app"
+	"go-auth-flow/restapi/operations/user"
 	"net/http"
 
-	"github.com/go-openapi/errors"
-	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
 	"go-auth-flow/restapi/operations"
-	"go-auth-flow/restapi/operations/user"
+
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
 )
 
 //go:generate swagger generate server --target ../../go-auth-flow --name GoAuthFlow --spec ../swagger.yml --principal interface{}
@@ -21,6 +23,7 @@ func configureFlags(api *operations.GoAuthFlowAPI) {
 }
 
 func configureAPI(api *operations.GoAuthFlowAPI) http.Handler {
+	app := app2.GetApp()
 	// configure the api here
 	api.ServeError = errors.ServeError
 
@@ -38,17 +41,15 @@ func configureAPI(api *operations.GoAuthFlowAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	if api.UserLoginHandler == nil {
-		api.UserLoginHandler = user.LoginHandlerFunc(func(params user.LoginParams) middleware.Responder {
-			return middleware.NotImplemented("operation user.Login has not yet been implemented")
-		})
-	}
+	api.UserLoginHandler = user.LoginHandlerFunc(func(params user.LoginParams) middleware.Responder {
+		return app.Handlers.LoginHandler.Login(params.HTTPRequest.Context(), params)
+	})
 
 	api.PreServerShutdown = func() {}
 
 	api.ServerShutdown = func() {}
 
-	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
+	return setupGlobalMiddleware(api.Serve(setupMiddlewares), app)
 }
 
 // The TLS configuration before HTTPS server starts.
@@ -71,6 +72,11 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics.
-func setupGlobalMiddleware(handler http.Handler) http.Handler {
-	return handler
+func setupGlobalMiddleware(handler http.Handler, app *app2.App) http.Handler {
+	middlewareSet := app.Middlewares
+	return middlewareSet.WrapUUID.Handle(
+		middlewareSet.PanicHandler.Handle(
+			middlewareSet.WrapRequestLogger.Handle(handler),
+		),
+	)
 }

@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"context"
 	"net/http"
 	"time"
 
@@ -20,12 +19,10 @@ func (rl *WrapRequestLogger) Handle(next http.Handler) http.Handler {
 				logrus.Printf("Getting start time from the context was failed")
 			} else {
 				endTime := time.Now()
-				logrus.Printf("The request with UUID: %v is finished at: %s. Total time taken: %d ms", r.Context().Value(ContextKeyRequestId), endTime.Format(time.RFC3339), endTime.Sub(startTime))
+				logrus.Printf("The request with UUID: %v is finished at: %s. Total time taken: %v", r.Context().Value(ContextKeyRequestId), endTime.Format(time.RFC3339), endTime.Sub(startTime))
 			}
 		}()
-		startTime := time.Now()
-		logrus.Printf("The request with UUID: %v is startd at: %s", r.Context().Value(ContextKeyRequestId), startTime.Format(time.RFC3339))
-		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), ContextKeyRequestStartAt, startTime)))
+		next.ServeHTTP(w, r)
 	})
 }
 

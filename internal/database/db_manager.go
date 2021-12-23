@@ -47,6 +47,7 @@ func InitializeDatabaseConnection(dep DBDependencies) *sqlx.DB {
 		sqlxDB, err := sqlx.Open("mysql", connectStr)
 		if err != nil {
 			log.Fatal(err)
+			panic(err)
 		}
 		sqlxDB.SetMaxIdleConns(dbConfig.GetMaxIdleConnections())
 		sqlxDB.SetMaxOpenConns(dbConfig.GetMaxOpenConnections())
