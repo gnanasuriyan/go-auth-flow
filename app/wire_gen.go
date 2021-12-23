@@ -30,7 +30,7 @@ func GetApp(ctx context.Context) (*App, error) {
 	panicHandler := &middlewares.PanicHandler{}
 	wrapRequestLogger := &middlewares.WrapRequestLogger{}
 	wrapUUID := &middlewares.WrapUUID{}
-	middleware := &middlewares.Middleware{
+	middlewaresMiddlewares := &middlewares.Middlewares{
 		PanicHandler:      panicHandler,
 		WrapRequestLogger: wrapRequestLogger,
 		WrapUUID:          wrapUUID,
@@ -38,7 +38,7 @@ func GetApp(ctx context.Context) (*App, error) {
 	app := &App{
 		AppConfig:  appConfiguration,
 		DB:         databaseDatabase,
-		Middleware: middleware,
+		Middleware: middlewaresMiddlewares,
 	}
 	return app, nil
 }
@@ -48,5 +48,5 @@ func GetApp(ctx context.Context) (*App, error) {
 type App struct {
 	AppConfig  *config.AppConfiguration
 	DB         *database.Database
-	Middleware *middlewares.Middleware
+	Middleware *middlewares.Middlewares
 }

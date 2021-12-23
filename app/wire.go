@@ -15,7 +15,7 @@ import (
 type App struct {
 	AppConfig  *config.AppConfiguration
 	DB         *database.Database
-	Middleware *middlewares.Middleware
+	Middleware *middlewares.Middlewares
 	//LoginHandler handlers.ILoginHandler
 }
 
