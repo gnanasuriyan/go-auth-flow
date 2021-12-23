@@ -19,12 +19,12 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"oauth-study/restapi/operations/user"
+	"go-auth-flow/restapi/operations/user"
 )
 
-// NewOauthStudyAPI creates a new OauthStudy instance
-func NewOauthStudyAPI(spec *loads.Document) *OauthStudyAPI {
-	return &OauthStudyAPI{
+// NewGoAuthFlowAPI creates a new GoAuthFlow instance
+func NewGoAuthFlowAPI(spec *loads.Document) *GoAuthFlowAPI {
+	return &GoAuthFlowAPI{
 		handlers:            make(map[string]map[string]http.Handler),
 		formats:             strfmt.Default,
 		defaultConsumes:     "application/json",
@@ -50,8 +50,8 @@ func NewOauthStudyAPI(spec *loads.Document) *OauthStudyAPI {
 	}
 }
 
-/*OauthStudyAPI Authentication flow */
-type OauthStudyAPI struct {
+/*GoAuthFlowAPI Authentication flow */
+type GoAuthFlowAPI struct {
 	spec            *loads.Document
 	context         *middleware.Context
 	handlers        map[string]map[string]http.Handler
@@ -106,52 +106,52 @@ type OauthStudyAPI struct {
 }
 
 // UseRedoc for documentation at /docs
-func (o *OauthStudyAPI) UseRedoc() {
+func (o *GoAuthFlowAPI) UseRedoc() {
 	o.useSwaggerUI = false
 }
 
 // UseSwaggerUI for documentation at /docs
-func (o *OauthStudyAPI) UseSwaggerUI() {
+func (o *GoAuthFlowAPI) UseSwaggerUI() {
 	o.useSwaggerUI = true
 }
 
 // SetDefaultProduces sets the default produces media type
-func (o *OauthStudyAPI) SetDefaultProduces(mediaType string) {
+func (o *GoAuthFlowAPI) SetDefaultProduces(mediaType string) {
 	o.defaultProduces = mediaType
 }
 
 // SetDefaultConsumes returns the default consumes media type
-func (o *OauthStudyAPI) SetDefaultConsumes(mediaType string) {
+func (o *GoAuthFlowAPI) SetDefaultConsumes(mediaType string) {
 	o.defaultConsumes = mediaType
 }
 
 // SetSpec sets a spec that will be served for the clients.
-func (o *OauthStudyAPI) SetSpec(spec *loads.Document) {
+func (o *GoAuthFlowAPI) SetSpec(spec *loads.Document) {
 	o.spec = spec
 }
 
 // DefaultProduces returns the default produces media type
-func (o *OauthStudyAPI) DefaultProduces() string {
+func (o *GoAuthFlowAPI) DefaultProduces() string {
 	return o.defaultProduces
 }
 
 // DefaultConsumes returns the default consumes media type
-func (o *OauthStudyAPI) DefaultConsumes() string {
+func (o *GoAuthFlowAPI) DefaultConsumes() string {
 	return o.defaultConsumes
 }
 
 // Formats returns the registered string formats
-func (o *OauthStudyAPI) Formats() strfmt.Registry {
+func (o *GoAuthFlowAPI) Formats() strfmt.Registry {
 	return o.formats
 }
 
 // RegisterFormat registers a custom format validator
-func (o *OauthStudyAPI) RegisterFormat(name string, format strfmt.Format, validator strfmt.Validator) {
+func (o *GoAuthFlowAPI) RegisterFormat(name string, format strfmt.Format, validator strfmt.Validator) {
 	o.formats.Add(name, format, validator)
 }
 
-// Validate validates the registrations in the OauthStudyAPI
-func (o *OauthStudyAPI) Validate() error {
+// Validate validates the registrations in the GoAuthFlowAPI
+func (o *GoAuthFlowAPI) Validate() error {
 	var unregistered []string
 
 	if o.JSONConsumer == nil {
@@ -174,23 +174,23 @@ func (o *OauthStudyAPI) Validate() error {
 }
 
 // ServeErrorFor gets a error handler for a given operation id
-func (o *OauthStudyAPI) ServeErrorFor(operationID string) func(http.ResponseWriter, *http.Request, error) {
+func (o *GoAuthFlowAPI) ServeErrorFor(operationID string) func(http.ResponseWriter, *http.Request, error) {
 	return o.ServeError
 }
 
 // AuthenticatorsFor gets the authenticators for the specified security schemes
-func (o *OauthStudyAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
+func (o *GoAuthFlowAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
 	return nil
 }
 
 // Authorizer returns the registered authorizer
-func (o *OauthStudyAPI) Authorizer() runtime.Authorizer {
+func (o *GoAuthFlowAPI) Authorizer() runtime.Authorizer {
 	return nil
 }
 
 // ConsumersFor gets the consumers for the specified media types.
 // MIME type parameters are ignored here.
-func (o *OauthStudyAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Consumer {
+func (o *GoAuthFlowAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Consumer {
 	result := make(map[string]runtime.Consumer, len(mediaTypes))
 	for _, mt := range mediaTypes {
 		switch mt {
@@ -207,7 +207,7 @@ func (o *OauthStudyAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Con
 
 // ProducersFor gets the producers for the specified media types.
 // MIME type parameters are ignored here.
-func (o *OauthStudyAPI) ProducersFor(mediaTypes []string) map[string]runtime.Producer {
+func (o *GoAuthFlowAPI) ProducersFor(mediaTypes []string) map[string]runtime.Producer {
 	result := make(map[string]runtime.Producer, len(mediaTypes))
 	for _, mt := range mediaTypes {
 		switch mt {
@@ -223,7 +223,7 @@ func (o *OauthStudyAPI) ProducersFor(mediaTypes []string) map[string]runtime.Pro
 }
 
 // HandlerFor gets a http.Handler for the provided operation method and path
-func (o *OauthStudyAPI) HandlerFor(method, path string) (http.Handler, bool) {
+func (o *GoAuthFlowAPI) HandlerFor(method, path string) (http.Handler, bool) {
 	if o.handlers == nil {
 		return nil, false
 	}
@@ -238,8 +238,8 @@ func (o *OauthStudyAPI) HandlerFor(method, path string) (http.Handler, bool) {
 	return h, ok
 }
 
-// Context returns the middleware context for the oauth study API
-func (o *OauthStudyAPI) Context() *middleware.Context {
+// Context returns the middleware context for the go auth flow API
+func (o *GoAuthFlowAPI) Context() *middleware.Context {
 	if o.context == nil {
 		o.context = middleware.NewRoutableContext(o.spec, o, nil)
 	}
@@ -247,7 +247,7 @@ func (o *OauthStudyAPI) Context() *middleware.Context {
 	return o.context
 }
 
-func (o *OauthStudyAPI) initHandlerCache() {
+func (o *GoAuthFlowAPI) initHandlerCache() {
 	o.Context() // don't care about the result, just that the initialization happened
 	if o.handlers == nil {
 		o.handlers = make(map[string]map[string]http.Handler)
@@ -261,7 +261,7 @@ func (o *OauthStudyAPI) initHandlerCache() {
 
 // Serve creates a http handler to serve the API over HTTP
 // can be used directly in http.ListenAndServe(":8000", api.Serve(nil))
-func (o *OauthStudyAPI) Serve(builder middleware.Builder) http.Handler {
+func (o *GoAuthFlowAPI) Serve(builder middleware.Builder) http.Handler {
 	o.Init()
 
 	if o.Middleware != nil {
@@ -274,24 +274,24 @@ func (o *OauthStudyAPI) Serve(builder middleware.Builder) http.Handler {
 }
 
 // Init allows you to just initialize the handler cache, you can then recompose the middleware as you see fit
-func (o *OauthStudyAPI) Init() {
+func (o *GoAuthFlowAPI) Init() {
 	if len(o.handlers) == 0 {
 		o.initHandlerCache()
 	}
 }
 
 // RegisterConsumer allows you to add (or override) a consumer for a media type.
-func (o *OauthStudyAPI) RegisterConsumer(mediaType string, consumer runtime.Consumer) {
+func (o *GoAuthFlowAPI) RegisterConsumer(mediaType string, consumer runtime.Consumer) {
 	o.customConsumers[mediaType] = consumer
 }
 
 // RegisterProducer allows you to add (or override) a producer for a media type.
-func (o *OauthStudyAPI) RegisterProducer(mediaType string, producer runtime.Producer) {
+func (o *GoAuthFlowAPI) RegisterProducer(mediaType string, producer runtime.Producer) {
 	o.customProducers[mediaType] = producer
 }
 
 // AddMiddlewareFor adds a http middleware to existing handler
-func (o *OauthStudyAPI) AddMiddlewareFor(method, path string, builder middleware.Builder) {
+func (o *GoAuthFlowAPI) AddMiddlewareFor(method, path string, builder middleware.Builder) {
 	um := strings.ToUpper(method)
 	if path == "/" {
 		path = ""

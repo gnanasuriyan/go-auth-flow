@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"context"
-	"oauth-study/models"
-	"oauth-study/restapi/operations/user"
+	"go-auth-flow/models"
+	"go-auth-flow/restapi/operations/user"
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/google/wire"

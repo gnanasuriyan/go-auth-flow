@@ -4,9 +4,11 @@ import (
 	"context"
 	"database/sql/driver"
 	"fmt"
+	"go-auth-flow/internal/config"
 	"log"
-	"oauth-study/internal/config"
 	"sync"
+
+	"github.com/google/wire"
 
 	"github.com/jmoiron/sqlx"
 
@@ -23,18 +25,26 @@ type DB struct {
 	DB *sqlx.DB
 }
 
-var once sync.Once
-var db *DB
+var NewDB = wire.NewSet(
+	InitializeDatabaseConnection,
+	wire.Bind(new(IDb), new(DB)),
+)
 
-func InitializeDatabaseConnection(appConfig *config.AppConfig) *DB {
+var (
+	once sync.Once
+	db   *DB
+)
+
+func InitializeDatabaseConnection(dbConfig config.IDatabaseConfig) *DB {
 	once.Do(func() {
-		connectStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true", appConfig.DB.Username, appConfig.DB.Password, appConfig.DB.Host, appConfig.DB.Port, appConfig.DB.Database)
+		connectStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true", dbConfig.GetUsername(), dbConfig.GetPassword(), dbConfig.GetHost(), dbConfig.GetPort(), dbConfig.GetDatabase())
 		sqlxDB, err := sqlx.Open("mysql", connectStr)
 		if err != nil {
 			log.Fatal(err)
 		}
-		sqlxDB.SetMaxIdleConns(appConfig.DB.MaxIdleConnections)
-		sqlxDB.SetMaxOpenConns(appConfig.DB.MaxOpenConnections)
+
+		sqlxDB.SetMaxIdleConns(dbConfig.GetMaxIdleConnections())
+		sqlxDB.SetMaxOpenConns(dbConfig.GetMaxOpenConnections())
 		db = &DB{DB: sqlxDB}
 	})
 	return db

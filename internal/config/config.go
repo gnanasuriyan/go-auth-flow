@@ -5,10 +5,22 @@ import (
 	"log"
 	"sync"
 
+	"github.com/google/wire"
+
 	"gopkg.in/yaml.v2"
 )
 
-type Config struct {
+type IDatabaseConfig interface {
+	GetHost() string
+	GetPort() uint
+	GetUsername() string
+	GetPassword() string
+	GetDatabase() string
+	GetMaxOpenConnections() int
+	GetMaxIdleConnections() int
+}
+
+type Configuration struct {
 	DB struct {
 		Host               string `default:"127.0.0.1" yaml:"host"`
 		Port               uint   `default:"3306" yaml:"port"`
@@ -20,25 +32,59 @@ type Config struct {
 	}
 }
 
-type AppConfig struct {
-	*Config
+type AppConfiguration struct {
+	*Configuration
 }
 
-var (
-	configOnce sync.Once
-	appConfig  *AppConfig
+var NewAppConfiguration = wire.NewSet(
+	GetConfiguration,
+	wire.Struct(new(AppConfiguration), "*"),
+	wire.Bind(new(IDatabaseConfig), new(AppConfiguration)),
 )
 
-func GetConfig() *AppConfig {
-	configOnce.Do(func() {
+var (
+	once          sync.Once
+	configuration *Configuration
+)
+
+func GetConfiguration() *Configuration {
+	once.Do(func() {
 		yamlFile, err := ioutil.ReadFile("config.yml")
 		if err != nil {
 			log.Fatalf("failed loading configuration: %v", err)
 		}
-		err = yaml.Unmarshal(yamlFile, appConfig)
+		err = yaml.Unmarshal(yamlFile, configuration)
 		if err != nil {
 			log.Fatalf("Unmarshal: %v", err)
 		}
 	})
-	return appConfig
+	return configuration
+}
+
+func (ac *Configuration) GetHost() string {
+	return ac.DB.Host
+}
+
+func (ac *Configuration) GetPort() uint {
+	return ac.DB.Port
+}
+
+func (ac *Configuration) GetUsername() string {
+	return ac.DB.Username
+}
+
+func (ac *Configuration) GetPassword() string {
+	return ac.DB.Password
+}
+
+func (ac *Configuration) GetDatabase() string {
+	return ac.DB.Database
+}
+
+func (ac *Configuration) GetMaxOpenConnections() int {
+	return ac.DB.MaxOpenConnections
+}
+
+func (ac *Configuration) GetMaxIdleConnections() int {
+	return ac.DB.MaxIdleConnections
 }

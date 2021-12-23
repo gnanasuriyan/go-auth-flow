@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"oauth-study/models"
+	"go-auth-flow/models"
 )
 
 // LoginOKCode is the HTTP code returned for type LoginOK

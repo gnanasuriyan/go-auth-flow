@@ -15,7 +15,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/validate"
 
-	"oauth-study/models"
+	"go-auth-flow/models"
 )
 
 // NewLoginParams creates a new LoginParams object

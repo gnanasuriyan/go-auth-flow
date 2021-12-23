@@ -3,35 +3,27 @@
 package restapi
 
 import (
-	"context"
 	"crypto/tls"
-	"fmt"
 	"net/http"
-	"oauth-study/wire"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"oauth-study/restapi/operations"
-	"oauth-study/restapi/operations/user"
+	"go-auth-flow/restapi/operations"
+	"go-auth-flow/restapi/operations/user"
 )
 
-//go:generate swagger generate server --target ../../oauth-study --name OauthStudy --spec ../swagger.yml --principal interface{}
+//go:generate swagger generate server --target ../../go-auth-flow --name GoAuthFlow --spec ../swagger.yml --principal interface{}
 
-func configureFlags(api *operations.OauthStudyAPI) {
+func configureFlags(api *operations.GoAuthFlowAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
 
-func configureAPI(api *operations.OauthStudyAPI) http.Handler {
-	ctx := context.Background()
-	app, err := wire.GetApp(ctx)
-	if err != nil {
-		panic(err)
-	}
+func configureAPI(api *operations.GoAuthFlowAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
-	fmt.Printf("database: %v", app.DB)
+
 	// Set your custom logger if needed. Default one is log.Printf
 	// Expected interface func(string, ...interface{})
 	//
@@ -43,13 +35,17 @@ func configureAPI(api *operations.OauthStudyAPI) http.Handler {
 	// api.UseRedoc()
 
 	api.JSONConsumer = runtime.JSONConsumer()
+
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.UserLoginHandler = user.LoginHandlerFunc(func(params user.LoginParams) middleware.Responder {
-		return app.LoginHandler.Login(params.HTTPRequest.Context(), params)
-	})
+	if api.UserLoginHandler == nil {
+		api.UserLoginHandler = user.LoginHandlerFunc(func(params user.LoginParams) middleware.Responder {
+			return middleware.NotImplemented("operation user.Login has not yet been implemented")
+		})
+	}
 
 	api.PreServerShutdown = func() {}
+
 	api.ServerShutdown = func() {}
 
 	return setupGlobalMiddleware(api.Serve(setupMiddlewares))
