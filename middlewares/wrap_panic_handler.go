@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"runtime/debug"
 
+	"github.com/google/wire"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,3 +22,5 @@ func (ph *PanicHandler) Handle(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+var NewPanicHandler = wire.Struct(new(PanicHandler), "*")

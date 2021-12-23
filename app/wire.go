@@ -7,14 +7,15 @@ import (
 	"context"
 	"go-auth-flow/internal/config"
 	"go-auth-flow/internal/database"
+	"go-auth-flow/middlewares"
 
 	"github.com/google/wire"
 )
 
 type App struct {
-	AppConfig *config.AppConfiguration
-	DB        *database.Database
-	//Middleware   *middlewares.Middleware
+	AppConfig  *config.AppConfiguration
+	DB         *database.Database
+	Middleware *middlewares.Middleware
 	//LoginHandler handlers.ILoginHandler
 }
 
@@ -22,19 +23,12 @@ type App struct {
 //	handlers.NewLoginHandler,
 //)
 
-//var middlewareSet = wire.NewSet(
-//	wire.Struct(new(middlewares.PanicHandler), "*"),
-//	wire.Struct(new(middlewares.WrapRequestLogger), "*"),
-//	wire.Struct(new(middlewares.WrapUUID), "*"),
-//)
-
 func GetApp(ctx context.Context) (*App, error) {
 	wire.Build(
-		config.NewAppConfiguration,
-		database.NewDatabase,
+		config.NewAppConfigurationSet,
+		database.NewDatabaseSet,
+		middlewares.MiddlewareSet,
 		//handlerSet,
-		//middlewareSet,
-		//wire.Struct(new(middlewares.Middleware), "*"),
 		wire.Struct(new(App), "*"),
 	)
 	return &App{}, nil

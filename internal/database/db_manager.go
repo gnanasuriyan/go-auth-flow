@@ -28,7 +28,7 @@ type Database struct {
 	SqlxDB *sqlx.DB
 }
 
-var NewDatabase = wire.NewSet(
+var NewDatabaseSet = wire.NewSet(
 	wire.Struct(new(DBDependencies), "*"),
 	InitializeDatabaseConnection,
 	wire.Struct(new(Database), "*"),

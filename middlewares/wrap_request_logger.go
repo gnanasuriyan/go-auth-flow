@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/google/wire"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -26,3 +28,5 @@ func (rl *WrapRequestLogger) Handle(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), ContextKeyRequestStartAt, startTime)))
 	})
 }
+
+var NewWrapRequestLogger = wire.Struct(new(WrapRequestLogger), "*")

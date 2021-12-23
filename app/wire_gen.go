@@ -10,6 +10,7 @@ import (
 	"context"
 	"go-auth-flow/internal/config"
 	"go-auth-flow/internal/database"
+	"go-auth-flow/middlewares"
 )
 
 // Injectors from wire.go:
@@ -26,9 +27,18 @@ func GetApp(ctx context.Context) (*App, error) {
 	databaseDatabase := &database.Database{
 		SqlxDB: db,
 	}
+	panicHandler := &middlewares.PanicHandler{}
+	wrapRequestLogger := &middlewares.WrapRequestLogger{}
+	wrapUUID := &middlewares.WrapUUID{}
+	middleware := &middlewares.Middleware{
+		PanicHandler:      panicHandler,
+		WrapRequestLogger: wrapRequestLogger,
+		WrapUUID:          wrapUUID,
+	}
 	app := &App{
-		AppConfig: appConfiguration,
-		DB:        databaseDatabase,
+		AppConfig:  appConfiguration,
+		DB:         databaseDatabase,
+		Middleware: middleware,
 	}
 	return app, nil
 }
@@ -36,6 +46,7 @@ func GetApp(ctx context.Context) (*App, error) {
 // wire.go:
 
 type App struct {
-	AppConfig *config.AppConfiguration
-	DB        *database.Database
+	AppConfig  *config.AppConfiguration
+	DB         *database.Database
+	Middleware *middlewares.Middleware
 }

@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/google/wire"
+
 	uuid2 "github.com/google/uuid"
 )
 
@@ -17,3 +19,5 @@ func (wd *WrapUUID) Handle(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
+
+var NewWrapUUID = wire.Struct(new(WrapUUID), "*")

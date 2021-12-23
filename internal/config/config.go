@@ -36,7 +36,7 @@ type AppConfiguration struct {
 	*Configuration
 }
 
-var NewAppConfiguration = wire.NewSet(
+var NewAppConfigurationSet = wire.NewSet(
 	GetConfiguration,
 	wire.Struct(new(AppConfiguration), "*"),
 	wire.Bind(new(IDatabaseConfig), new(*AppConfiguration)),
