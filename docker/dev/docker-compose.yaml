@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+  db:
+    image: mysql:5.7.36
+    platform: linux/x86_64
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'acme-user'
+      MYSQL_USER: 'dev_user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    volumes:
+      - my-acme-user:/var/lib/mysql
+volumes:
+  my-acme-user:

@@ -11,7 +11,7 @@ info:
 basePath: "/v1"
 tags:
   - name: "user"
-    description: everything abount user and authentication
+    description: everything about user and authentication
 consumes:
   - application/json
 produces:

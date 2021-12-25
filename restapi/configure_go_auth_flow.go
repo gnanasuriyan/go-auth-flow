@@ -38,7 +38,6 @@ func configureAPI(api *operations.GoAuthFlowAPI) http.Handler {
 	// api.UseRedoc()
 
 	api.JSONConsumer = runtime.JSONConsumer()
-
 	api.JSONProducer = runtime.JSONProducer()
 
 	api.UserLoginHandler = user.LoginHandlerFunc(func(params user.LoginParams) middleware.Responder {

@@ -8,12 +8,25 @@ package app
 
 import (
 	"go-auth-flow/handlers"
+	"go-auth-flow/internal/config"
+	"go-auth-flow/internal/database"
 	"go-auth-flow/middlewares"
 )
 
 // Injectors from wire.go:
 
 func GetApp() *App {
+	configuration := config.GetConfiguration()
+	appConfiguration := &config.AppConfiguration{
+		Configuration: configuration,
+	}
+	dbDependencies := database.DBDependencies{
+		DatabaseConfig: appConfiguration,
+	}
+	db := database.InitializeDatabaseConnection(dbDependencies)
+	databaseDatabase := &database.Database{
+		SqlxDB: db,
+	}
 	panicHandler := &middlewares.PanicHandler{}
 	wrapRequestLogger := &middlewares.WrapRequestLogger{}
 	wrapUUID := &middlewares.WrapUUID{}
@@ -27,6 +40,8 @@ func GetApp() *App {
 		LoginHandler: loginHandler,
 	}
 	app := &App{
+		AppConfig:   appConfiguration,
+		DB:          databaseDatabase,
 		Middlewares: middlewaresMiddlewares,
 		Handlers:    handlersHandlers,
 	}
@@ -36,8 +51,8 @@ func GetApp() *App {
 // wire.go:
 
 type App struct {
-	//AppConfig  *config.AppConfiguration
-	//DB         *database.Database
+	AppConfig   *config.AppConfiguration
+	DB          *database.Database
 	Middlewares *middlewares.Middlewares
 	Handlers    *handlers.Handlers
 }
